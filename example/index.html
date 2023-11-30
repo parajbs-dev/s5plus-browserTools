@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>s5plus browserTestTools Example</title>
+    <script src="/dist/s5plus-browserTools.js"></script>
+
+    <script>
+      async function main() {
+        const {
+          encodeBase58BTC,
+          decodeBase58BTC,
+          encodeBase32RFC,
+          decodeBase32RFC,
+          encodeBase64URL,
+          decodeBase64URL,
+          encodeCid,
+          JSONparse,
+          JSONstringify,
+          downloadAndCreateUint8Array,
+          equalBytes,
+        } = browserTools;
+
+        let encoder = new TextEncoder();
+        let decoder = new TextDecoder();
+
+        const cidTypeResolver = 0x25;
+        const cidTypeRaw = 0x26;
+        const mhashBlake3Default = 0x1f;
+        const mkeyEd25519 = 0xed;
+        const publicKey = "7VoNzKUx7aUsV2uDrenSgZD9ox6RxhLRcFyldIl6mmx2";
+
+        const defaultUcid = "uJh_Q8MyTc1Yg3MrvmHfsPNRF9rW2p1N4iXUsC82HfiFhJ1At";
+        const defaultZcid = "zHnqMH3PxHKfckpGtojrCcXcvk67waacM51C5fkcGW7Qkyt1YG";
+        const defaultBcid = "beyp5b4gmsnzvmig4zlxzq57mhtkel5vvw2tvg6ejouwaxtmhpyqwcj2qfu";
+
+        const c1 = decodeBase58BTC(defaultZcid.slice(1))
+        console.log("decodeBase58BTC: ", c1);
+
+        const c2 = 'z' + encodeBase58BTC(c1)
+        console.log("encodeBase58BTC: ", c2);
+        console.log("\n");
+
+        const c3 = decodeBase32RFC(defaultBcid.slice(1))
+        console.log("decodeBase32RFC: ", c3);
+
+        const c4 = 'b' + encodeBase32RFC(c3)
+        console.log("encodeBase32RFC: ", c4);
+        console.log("\n");
+
+        const c5 = decodeBase64URL(defaultUcid.slice(1))
+        console.log("decodeBase64URL: ", c5);
+
+        const c6 = 'u' + encodeBase64URL(c5)
+        console.log("encodeBase64URL: ", c6);
+        console.log("\n");
+
+        const resolverCid = 'z' + encodeCid(decodeBase64URL(publicKey).slice(1), 0, cidTypeResolver, mkeyEd25519);
+        console.log("encodeCid: ", resolverCid);
+        console.log("\n");
+
+        const jsonData = { Hello: "world7", mydata: "Jurasic79" };
+        const JSONstringifyData = JSONstringify(jsonData);
+        console.log('JSONstringify:   ', JSONstringifyData);
+        console.log('JSONparse:   ', JSONparse(JSONstringifyData));
+        console.log("\n");
+
+
+        const jsonUint8Array = await downloadAndCreateUint8Array('//localhost:8080/favicon.ico');
+        console.log("downloadAndCreateUint8Array: ", jsonUint8Array);
+
+        const jsonUint8Array2 = await fetch('//localhost:8080/favicon.ico');
+        const jsonUint8Array3 = new Uint8Array(await jsonUint8Array2.arrayBuffer());
+        console.log("downloadAndCreateUint8Array2: ", jsonUint8Array3);
+        console.log("\n");
+
+        console.log("equalBytes: ", equalBytes(jsonUint8Array, jsonUint8Array3))
+        console.log("\n");
+      }
+      main();
+    </script>
+  </head>
+  <body>
+    <br />
+    <br />
+  </body>
+</html>
